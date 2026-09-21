@@ -75,7 +75,10 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  res.clearCookie("user_token");
+  // Attributes must match the ones used when the cookie was set (sameSite/secure/httpOnly),
+  // otherwise browsers ignore the clear on a cross-site https deployment.
+  const { maxAge, ...clearConfig } = cookieConfig;
+  res.clearCookie("user_token", clearConfig);
 
   res.status(200).json({ msg: "Logged out Successfully" });
 };
